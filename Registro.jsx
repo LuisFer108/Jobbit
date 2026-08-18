@@ -1,61 +1,68 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Registro() {
   const [nombre, setNombre] = useState("");
   const [correo, setCorreo] = useState("");
   const [contrasena, setContrasena] = useState("");
-  const [error, setError] = useState("");
 
   const navigate = useNavigate();
 
   const crearCuenta = () => {
-
-    // Validar nombre
-    if (nombre.trim() === "") {
-      setError("El nombre es obligatorio.");
+    if (nombre === "" || correo === "" || contrasena === "") {
+      alert("Por favor, completa todos los campos.");
       return;
     }
 
-    // Validar correo
-    if (!correo.includes("@") || !correo.includes(".")) {
-      setError("Ingresa un correo electrónico válido.");
+    // Obtener las cuentas que ya existen
+    const usuariosGuardados = localStorage.getItem("jobbit_usuarios");
+
+    const usuarios = usuariosGuardados
+      ? JSON.parse(usuariosGuardados)
+      : [];
+
+    // Verificar si el correo ya está registrado
+    const correoExiste = usuarios.some(
+      (usuario) =>
+        usuario.correo.toLowerCase().trim() ===
+        correo.toLowerCase().trim()
+    );
+
+    if (correoExiste) {
+      alert("Ya existe una cuenta registrada con ese correo.");
       return;
     }
 
-    // Validar contraseña
-    if (contrasena.length < 6) {
-      setError("La contraseña debe tener al menos 6 caracteres.");
-      return;
-    }
-
-    // Crear usuario
-    const usuario = {
+    // Crear el nuevo usuario
+    const nuevoUsuario = {
       nombre: nombre,
-      correo: correo,
-      contrasena: contrasena
+      correo: correo.trim(),
+      contrasena: contrasena,
+      tipo: "candidato",
+      perfil: null,
     };
 
-    // Guardar temporalmente
-    localStorage.setItem("usuario", JSON.stringify(usuario));
+    // Agregar el usuario a la lista
+    usuarios.push(nuevoUsuario);
 
-    // Limpiar error
-    setError("");
+    // Guardar todos los usuarios
+    localStorage.setItem(
+      "jobbit_usuarios",
+      JSON.stringify(usuarios)
+    );
 
-    // Ir al inicio de sesión
+    alert("Cuenta creada correctamente.");
+
     navigate("/login");
   };
 
   return (
     <div className="registro">
-
       <h1>JOBBIT</h1>
 
       <h2>Crear una cuenta</h2>
 
-      <p>
-        Completa tus datos para registrarte.
-      </p>
+      <p>Completa tus datos para registrarte.</p>
 
       <div className="formulario">
 
@@ -86,18 +93,16 @@ function Registro() {
           onChange={(e) => setContrasena(e.target.value)}
         />
 
-        {error && (
-          <p className="error">
-            {error}
-          </p>
-        )}
-
         <button onClick={crearCuenta}>
           Crear cuenta
         </button>
 
       </div>
 
+      <p>
+        ¿Ya tienes una cuenta?{" "}
+        <Link to="/login">Inicia sesión</Link>
+      </p>
     </div>
   );
 }
