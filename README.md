@@ -4,11 +4,11 @@ Esta es una PoC para Jobbit, un portal web de empleo con funcionalidades inicial
 
 **Integrantes**
 
--Sara Arboleda Quintero
+- Sara Arboleda Quintero
 
--Andrea Carolina Mercado Garrido
+- Andrea Carolina Mercado Garrido
 
--Luis Fernando Bernal Ramirez.
+- Luis Fernando Bernal Ramirez.
 
 ## Tecnologías utilizadas
 
